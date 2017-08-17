@@ -1,0 +1,1 @@
+ogr2ogr -f PostgreSQL PG:"dbname=research port=5433 user=portgres" -nln gtfs.stops ./data/stops.vrt
