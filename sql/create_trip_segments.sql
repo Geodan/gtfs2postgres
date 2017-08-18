@@ -1,5 +1,5 @@
-﻿DROP TABLE IF EXISTS open9292ov.cur_tripsegments;
-CREATE TABLE open9292ov.cur_tripsegments AS
+﻿DROP TABLE IF EXISTS gtfs.cur_tripsegments;
+CREATE TABLE gtfs.cur_tripsegments AS
 
 WITH stops AS (
 SELECT 
@@ -9,14 +9,14 @@ SELECT
 		WHEN s.parent_station = '' THEN s.stop_id
 		ELSE s.parent_station
 	END stop_id
-	,date_trunc('hour',st.departure_time::Time) as hour
+	,date_trunc('hour',st.departure_time) as hour
 	,st.stop_sequence
 	,ST_SetSrid(ST_MakePoint(s.stop_lon, s.stop_lat),4326) geom
-FROM open9292ov.routes r
-INNER JOIN open9292ov.trips t ON (r.route_id = t.route_id)
-INNER JOIN open9292ov.calendar_dates c ON (t.service_id = c.service_id AND date::Date = now()::Date) --Todays service)
-INNER JOIN open9292ov.stop_times st ON (t.trip_id = st.trip_id AND LEFT(st.departure_time,2)::Integer < 24)
-INNER JOIN open9292ov.stops s ON (st.stop_id = s.stop_id)
+FROM gtfs.routes r
+INNER JOIN gtfs.trips t ON (r.route_id = t.route_id)
+INNER JOIN gtfs.calendar_dates c ON (t.service_id = c.service_id AND date::Date = now()::Date) --Todays service)
+INNER JOIN gtfs.stop_times st ON (t.trip_id = st.trip_id AND date_part('hours',st.departure_time)::Integer < 24)
+INNER JOIN gtfs.stops s ON (st.stop_id = s.stop_id)
 --WHERE r.agency_id = 'NS' OR r.agency_id = 'ARRIVA'
 --GROUP BY 	r.route_long_name, c.date, t.trip_id, t.trip_headsign, t.direction_id 
 ORDER BY st.trip_id, st.stop_sequence 

@@ -10,11 +10,11 @@ CREATE INDEX ndx_nodes_tags
 */
 
 /** Make geometry object for stops **/
-SELECT AddGeometryColumn ('open9292ov','stops','geom',4326,'POINT',2);
+SELECT AddGeometryColumn ('gtfs','stops','geom',4326,'POINT',2);
 UPDATE open9292ov.stops SET geom = ST_SetSrid(St_MakePoint(stop_lon, stop_lat),4326);
 
 /** Create a simple stop-name to be able to compare with OSM stop names **/
-ALTER TABLE open9292ov.stops
+ALTER TABLE gtfs.stops
    ADD COLUMN name_simple character varying;
 
 
